@@ -1,34 +1,49 @@
-async function draw(el) {
+async function draw(el, scale) {
   // Data
-  const dataset = await d3.json('data.json')
+  const dataset = await d3.json("data.json");
+  dataset.sort((a, b) => a - b);
 
   // Dimensions
   let dimensions = {
     width: 600,
-    height: 150,
+    height: 150
   };
 
   const box = 30;
 
   // Draw Image
-  const svg = d3.select(el)
+  const svg = d3
+    .select(el)
     .append("svg")
     .attr("width", dimensions.width)
     .attr("height", dimensions.height);
 
+  // Scales
+  let colorScale;
+
+  if (scale === "linear") {
+    colorScale = d3
+      .scaleLinear()
+      .domain(d3.extent(dataset))
+      .range(["white", "red"]);
+  }
+
   // Rectangles
-  svg.append("g")
+  svg
+    .append("g")
     .attr("transform", "translate(2, 2)")
     .attr("stroke", "black")
-    .attr("fill", "#ddd")
+    // .attr("fill", "#ddd")
     .selectAll("rect")
     .data(dataset)
     .join("rect")
     .attr("width", box - 3)
     .attr("height", box - 3)
     .attr("x", (d, i) => box * (i % 20)) // 0, 30, 60 ...
-    .attr("y", (d, i) => box * ((i / 20) | 0));
-
+    .attr("y", (d, i) => box * ((i / 20) | 0))
+    // This is the same as .attr("fill", (d) => colorScale(d))
+    .attr("fill", colorScale);
+    ;
 }
 
-draw('#heatmap1')
+draw("#heatmap1", "linear");
