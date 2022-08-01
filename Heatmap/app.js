@@ -31,11 +31,13 @@ async function draw(el, scale) {
       .scaleQuantize()
       .domain(d3.extent(dataset))
       .range(["white", "pink", "red"]);
+    console.log("Quantize: ", colorScale.thresholds());
   } else if (scale === "quantile") {
     colorScale = d3
       .scaleQuantile()
       .domain(dataset)
       .range(["white", "pink", "red"]);
+    console.log("Quantile: ", colorScale.quantiles());
   } else if (scale === "threshold") {
     colorScale = d3
       .scaleThreshold()
