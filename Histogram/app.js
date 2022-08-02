@@ -34,13 +34,22 @@ async function draw() {
       .range([0, dimensions.ctrWidth])
       .nice();
 
+    const bin = d3.bin()
+      .domain(xScale.domain())
+      .value(xAccessor)
+      .thresholds(10);
+
+    const newDataset = bin(dataset);
+    const padding = 1;
+    // console.log({ original: dataset, new: newDataset });
+
     // Draw Bars
     ctr.selectAll("rect")
-      .data(dataset)
+      .data(newDataset)
       .join("rect")
-      .attr("width", 5)
+      .attr("width", d => d3.max([0, xScale(d.x1) - xScale(d.x0) - padding]))
       .attr("height", 100)
-      .attr("x", d => xScale(xAccessor(d)))
+      .attr("x", d => xScale(d.x0))
       .attr("y", 0);
 
 }
